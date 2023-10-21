@@ -42,9 +42,11 @@ class App
         elsif event.key == 'return' || event.key == 'enter'
           case @current_screen.options[@current_screen.selected_option]
           when "Tabuleiro 8x12"
-            puts "Iniciar jogo com tabuleiro 8x12"
+            Window.clear
+            @current_screen = GameScreen.new(8, 12)
           when "Tabuleiro 10x15"
-            puts "Iniciar jogo com tabuleiro 10x15"
+            Window.clear
+            @current_screen = GameScreen.new(10, 15)
           end
         end
       end
