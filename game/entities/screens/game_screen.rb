@@ -12,8 +12,10 @@ class GameScreen
   def render
     title_text = Text.new('SELECIONE OS SEUS NAVIOS', size: 64, y: 40)
     title_text.x = (App.class_variable_get(:@@canvas).width - title_text.width) / 2
+
     x_deslocation = (App.class_variable_get(:@@canvas).width - @cols * (40 + 2)) / 2
-    y_deslocation = 300
+    y_deslocation = 250
+
     (0...@rows).each do |row|
       (0...@cols).each do |col|
         @blocks << Block.new(x_deslocation + col * (40 + 2), y_deslocation + row * (40 + 2), @board[row][col])
