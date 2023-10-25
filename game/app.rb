@@ -43,15 +43,29 @@ class App
           case @current_screen.options[@current_screen.selected_option]
           when "Tabuleiro 8x12"
             Window.clear
-            @current_screen = GameScreen.new(8, 12)
+            @current_screen = ShipsSelectedScreen.new(8, 12)
           when "Tabuleiro 10x15"
             Window.clear
-            @current_screen = GameScreen.new(10, 15)
+            @current_screen = ShipsSelectedScreen.new(10, 15)
           end
+        end
+      when ShipsSelectedScreen
+        if event.key == 'w'
+          @current_screen.ship.move_up
+        elsif event.key == 'a'
+          @current_screen.ship.move_left
+        elsif event.key == 'd'
+          @current_screen.ship.move_right
+        elsif event.key == 's'
+          @current_screen.ship.move_down
+        elsif event.key == 'left ctrl'
+          @current_screen.ship.move_rotate
         end
       end
     end
   end
+
+
 
 end
 

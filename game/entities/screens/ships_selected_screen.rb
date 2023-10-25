@@ -1,10 +1,14 @@
-class GameScreen
-  attr_accessor :board, :blocks
+require_relative '../player/ship.rb'
+
+class ShipsSelectedScreen
+  attr_accessor :board, :blocks, :ship
+
   def initialize(rows, cols)
     @rows = rows
     @cols = cols
     @board = Array.new(rows) { Array.new(cols, 0) }
     @blocks = []
+    @ship = Ship.new(2, ((App.class_variable_get(:@@canvas).width - @cols * (40 + 2)) / 2), 250, @rows, @cols)
     
     render
   end
