@@ -1,7 +1,7 @@
 require_relative '../player/ship.rb'
 
 class ShipsSelectedScreen
-  attr_accessor :board, :blocks, :ship
+  attr_accessor :board, :blocks, :ship, :number_ships
 
   def initialize(rows, cols)
     @rows = rows
@@ -9,6 +9,7 @@ class ShipsSelectedScreen
     @board = Array.new(rows) { Array.new(cols, 0) }
     @blocks = []
     @ship = Ship.new('./images/ShipBattleshipHull.png', 5, ((App.class_variable_get(:@@canvas).width - @cols * (40 + 2)) / 2), 250, @rows, @cols, @board)
+    @number_ships = 10
     @selecteds_ship = []
     
     render
@@ -17,6 +18,9 @@ class ShipsSelectedScreen
   def render
     title_text = Text.new('SELECIONE OS SEUS NAVIOS', size: 64, y: 40)
     title_text.x = (App.class_variable_get(:@@canvas).width - title_text.width) / 2
+
+    sub_title = Text.new('NAVIOS DISPONIVEIS: %d' %[@number_ships], size: 26, y: 120)
+    sub_title.x = (App.class_variable_get(:@@canvas).width - sub_title.width) / 2
 
     x_displacement = (App.class_variable_get(:@@canvas).width - @cols * (40 + 2)) / 2
     y_displacement = 250
@@ -33,11 +37,20 @@ class ShipsSelectedScreen
 
   def select_ship
     selected, board = @ship.enter
-    if selected == true
+    if selected == true && @number_ships > 0
+      @number_ships -= 1
       @selecteds_ship << @ship.dup
       @board = board
       Window.clear
-      @ship = Ship.new('./images/ShipBattleshipHull.png', 2, ((App.class_variable_get(:@@canvas).width - @cols * (40 + 2)) / 2), 250, @rows, @cols, @board)
+
+      if @number_ships < 5
+        @ship = Ship.new('./images/ShipBattleshipHull.png', 2, ((App.class_variable_get(:@@canvas).width - @cols * (40 + 2)) / 2), 250, @rows, @cols, @board)
+      elsif @number_ships < 8
+        @ship = Ship.new('./images/ShipBattleshipHull.png', 3, ((App.class_variable_get(:@@canvas).width - @cols * (40 + 2)) / 2), 250, @rows, @cols, @board)
+      elsif @number_ships < 10
+        @ship = Ship.new('./images/ShipBattleshipHull.png', 4, ((App.class_variable_get(:@@canvas).width - @cols * (40 + 2)) / 2), 250, @rows, @cols, @board)
+      end
+
       render
     end
   end
