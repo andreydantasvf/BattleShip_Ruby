@@ -1,4 +1,5 @@
 require_relative '../player/ship.rb'
+require_relative '../shared/block.rb'
 
 class ShipsSelectedScreen
   attr_accessor :board, :blocks, :ship, :number_ships
@@ -53,23 +54,5 @@ class ShipsSelectedScreen
 
       render
     end
-  end
-end
-
-class Block
-  attr_accessor :x, :y, :state
-  
-  def initialize(x, y, state)
-    @x = x
-    @y = y
-    @state = state
-  end
-  
-  def draw
-    Square.new(
-      x: @x, y: @y,
-      size: 40,
-      color: 'blue'
-    )
   end
 end
