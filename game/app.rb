@@ -60,6 +60,8 @@ class App
           @current_screen.ship.move_down
         elsif event.key == 'left ctrl'
           @current_screen.ship.move_rotate
+        elsif event.key == 'return' || event.key == 'enter'
+          @current_screen.select_ship
         end
       end
     end

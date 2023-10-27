@@ -8,7 +8,8 @@ class ShipsSelectedScreen
     @cols = cols
     @board = Array.new(rows) { Array.new(cols, 0) }
     @blocks = []
-    @ship = Ship.new(2, ((App.class_variable_get(:@@canvas).width - @cols * (40 + 2)) / 2), 250, @rows, @cols)
+    @ship = Ship.new('./images/ShipBattleshipHull.png', 5, ((App.class_variable_get(:@@canvas).width - @cols * (40 + 2)) / 2), 250, @rows, @cols, @board)
+    @selecteds_ship = []
     
     render
   end
@@ -27,6 +28,18 @@ class ShipsSelectedScreen
     end
 
     @blocks.each(&:draw)
+    @selecteds_ship.each { |ship| Image.new(ship.ship.path, width: ship.ship.width, height: ship.ship.height, z: @ship.ship.z + 10, x: ship.ship.x, y: ship.ship.y, rotate: ship.ship.rotate)}
+  end
+
+  def select_ship
+    selected, board = @ship.enter
+    if selected == true
+      @selecteds_ship << @ship.dup
+      @board = board
+      Window.clear
+      @ship = Ship.new('./images/ShipBattleshipHull.png', 2, ((App.class_variable_get(:@@canvas).width - @cols * (40 + 2)) / 2), 250, @rows, @cols, @board)
+      render
+    end
   end
 end
 
