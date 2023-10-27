@@ -8,7 +8,7 @@ class ShipsSelectedScreen
     @cols = cols
     @board = Array.new(rows) { Array.new(cols, 0) }
     @blocks = []
-    @ship = Ship.new('./images/ShipBattleshipHull.png', 5, ((App.class_variable_get(:@@canvas).width - @cols * (40 + 2)) / 2), 250, @rows, @cols, @board)
+    @ship = Ship.new('./images/aircraft_carrier.png', 5, ((App.class_variable_get(:@@canvas).width - @cols * (40 + 2)) / 2), 250, @rows, @cols, @board)
     @number_ships = 10
     @selecteds_ship = []
     
@@ -44,11 +44,11 @@ class ShipsSelectedScreen
       Window.clear
 
       if @number_ships < 5
-        @ship = Ship.new('./images/ShipBattleshipHull.png', 2, ((App.class_variable_get(:@@canvas).width - @cols * (40 + 2)) / 2), 250, @rows, @cols, @board)
+        @ship = Ship.new('./images/submarine.png', 2, ((App.class_variable_get(:@@canvas).width - @cols * (40 + 2)) / 2), 250, @rows, @cols, @board)
       elsif @number_ships < 8
-        @ship = Ship.new('./images/ShipBattleshipHull.png', 3, ((App.class_variable_get(:@@canvas).width - @cols * (40 + 2)) / 2), 250, @rows, @cols, @board)
+        @ship = Ship.new('./images/destroyers.png', 3, ((App.class_variable_get(:@@canvas).width - @cols * (40 + 2)) / 2), 250, @rows, @cols, @board)
       elsif @number_ships < 10
-        @ship = Ship.new('./images/ShipBattleshipHull.png', 4, ((App.class_variable_get(:@@canvas).width - @cols * (40 + 2)) / 2), 250, @rows, @cols, @board)
+        @ship = Ship.new('./images/tankers.png', 4, ((App.class_variable_get(:@@canvas).width - @cols * (40 + 2)) / 2), 250, @rows, @cols, @board)
       end
 
       render
