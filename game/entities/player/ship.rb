@@ -8,8 +8,9 @@ class Ship
     @board = board
     @initial_x = x
     @initial_y = y
+    @block_size = App.class_variable_get(:@@canvas).block_size
     @size = size
-    @ship = Image.new(image_url, width: 40, height: size * 40, z: 50, x: @initial_x, y: @initial_y, rotate: 0)
+    @ship = Image.new(image_url, width: @block_size, height: size * @block_size, z: 50, x: @initial_x, y: @initial_y, rotate: 0)
     @orientation = :vertical
   end
 
@@ -20,23 +21,23 @@ class Ship
   def move_left
     if @orientation == :vertical
       if @ship.x > @initial_x
-        @ship.x -= 42
+        @ship.x -= @block_size + 2
       end
     elsif @orientation == :horizontal
-      if @ship.x > @initial_x + 42 * ((@size - 1).to_f / 2 )
-        @ship.x -= 42
+      if @ship.x > @initial_x + (@block_size + 2) * ((@size - 1).to_f / 2 )
+        @ship.x -= @block_size + 2
       end
     end
   end
 
   def move_right
     if @orientation == :vertical
-      if @ship.x < @initial_x + 42 * (@cols - 1)
-        @ship.x += 42
+      if @ship.x < @initial_x + (@block_size + 2) * (@cols - 1)
+        @ship.x += (@block_size + 2)
       end
     elsif @orientation == :horizontal
-      if @ship.x < @initial_x + 42 * (@cols - 1) - 42 * ((@size-1).to_f / 2 )
-        @ship.x += 42
+      if @ship.x < @initial_x + (@block_size + 2) * (@cols - 1) - (@block_size + 2) * ((@size-1).to_f / 2 )
+        @ship.x += (@block_size + 2)
       end
     end
   end
@@ -44,23 +45,23 @@ class Ship
   def move_up
     if @orientation == :vertical
       if @ship.y > @initial_y
-        @ship.y -= 42
+        @ship.y -= (@block_size + 2)
       end
     elsif @orientation == :horizontal
-      if @ship.y > @initial_y - 42 * ((@size - 1).to_f / 2 )
-        @ship.y -= 42
+      if @ship.y > @initial_y - (@block_size + 2) * ((@size - 1).to_f / 2 )
+        @ship.y -= (@block_size + 2)
       end
     end
   end
 
   def move_down
     if @orientation == :vertical
-      if @ship.y < @initial_y + 42 * (@rows - 1) - @ship.height
-        @ship.y += 42
+      if @ship.y < @initial_y + (@block_size + 2) * (@rows - 1) - @ship.height
+        @ship.y += (@block_size + 2)
       end
     elsif @orientation == :horizontal
-      if @ship.y < @initial_y + 42 * (@rows - 1) - @ship.height + 42 * ((@size-1).to_f / 2 )
-        @ship.y += 42
+      if @ship.y < @initial_y + (@block_size + 2) * (@rows - 1) - @ship.height + (@block_size + 2) * ((@size-1).to_f / 2 )
+        @ship.y += (@block_size + 2)
       end
     end
   end
@@ -69,22 +70,22 @@ class Ship
     if @ship.rotate == 0
       @ship.rotate = 90
       @orientation = :horizontal
-      if @ship.x > @initial_x + 42 * (@cols - @size)
-        @ship.x -= 42 * ((@size - 1).to_f / 2 )
+      if @ship.x > @initial_x + (@block_size + 2) * (@cols - @size)
+        @ship.x -= (@block_size + 2) * ((@size - 1).to_f / 2 )
       else
-        @ship.x += 42 * ((@size - 1).to_f / 2 )
+        @ship.x += (@block_size + 2) * ((@size - 1).to_f / 2 )
       end
       
-      @ship.y -= 42 * ((@size - 1).to_f / 2)
+      @ship.y -= (@block_size + 2) * ((@size - 1).to_f / 2)
     else
       @ship.rotate = 0
       @orientation = :vertical
-      @ship.x -= 42 * ((@size - 1).to_f / 2 )
+      @ship.x -= (@block_size + 2) * ((@size - 1).to_f / 2 )
 
-      if @ship.y > @initial_y + 42 * (@rows - @size - 1)
-        @ship.y -= 42 * ((@size - 1).to_f / 2 )
+      if @ship.y > @initial_y + (@block_size + 2) * (@rows - @size - 1)
+        @ship.y -= (@block_size + 2) * ((@size - 1).to_f / 2 )
       else
-        @ship.y += 42 * ((@size - 1).to_f / 2 )
+        @ship.y += (@block_size + 2) * ((@size - 1).to_f / 2 )
       end
     end
   end
@@ -94,14 +95,14 @@ class Ship
 
     if @orientation == :vertical
       (0...@size).each do |i|
-        row = (@ship.y - @initial_y) / 42 + i
-        col = (@ship.x - @initial_x) / 42
+        row = (@ship.y - @initial_y) / (@block_size + 2) + i
+        col = (@ship.x - @initial_x) / (@block_size + 2)
         positions << [row, col]
       end
     else
       (0...@size).each do |i|
-        row = ((@ship.y - @initial_y) / 42) + (0.5 * (@size - 1))
-        col = ((@ship.x - @initial_x) / 42 + i) - (0.5 * (@size - 1))
+        row = ((@ship.y - @initial_y) / (@block_size + 2)) + (0.5 * (@size - 1))
+        col = ((@ship.x - @initial_x) / (@block_size + 2) + i) - (0.5 * (@size - 1))
         positions << [row, col]
       end
     end
