@@ -2,7 +2,7 @@ require_relative '../player/ship.rb'
 require_relative '../shared/block.rb'
 
 class ShipsSelectedScreen
-  attr_accessor :board, :blocks, :ship, :number_ships
+  attr_accessor :board, :blocks, :ship, :number_ships, :board, :selecteds_ship
 
   def initialize(rows, cols)
     @rows = rows
@@ -35,7 +35,7 @@ class ShipsSelectedScreen
     end
 
     @blocks.each(&:draw)
-    @selecteds_ship.each { |ship| Image.new(ship.ship.path, width: ship.ship.width, height: ship.ship.height, z: @ship.ship.z + 10, x: ship.ship.x, y: ship.ship.y, rotate: ship.ship.rotate)}
+    @selecteds_ship.each { |ship| Image.new(ship.ship.path, width: ship.ship.width, height: ship.ship.height, z: ship.ship.z + 10, x: ship.ship.x, y: ship.ship.y, rotate: ship.ship.rotate)}
   end
 
   def select_ship
