@@ -7,7 +7,7 @@ module Shared
       @width = 1280
       @height = 720
       @margin = 10
-      @block_size = 40
+      @block_size = 35
     end
   end
 end
