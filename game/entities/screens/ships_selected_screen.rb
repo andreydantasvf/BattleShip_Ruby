@@ -14,12 +14,6 @@ class ShipsSelectedScreen
     @ship = Ship.new('./images/aircraft_carrier.png', 5, 25, 250, @rows, @cols, @board)
     @number_ships = 10
     @selecteds_ship = []
-
-    text_player = Text.new('Player', size: 26, y: 200)
-    text_player.x = (25 + @cols * (@block_size + 2) - text_player.width) / 2
-
-    text_enemy = Text.new('Enemy', size: 26, y: 200)
-    text_enemy.x = @width_canvas - text_enemy.width + 25 - (@cols * (@block_size + 2)) / 2
     
     render_enemy_board
     render
@@ -32,12 +26,18 @@ class ShipsSelectedScreen
     sub_title = Text.new('NAVIOS DISPONIVEIS: %d' %[@number_ships], size: 26, y: 120)
     sub_title.x = (@width_canvas - sub_title.width) / 2
 
+    text_player = Text.new('Player', size: 26, y: 200)
+    text_player.x = (25 + @cols * (@block_size + 2) - text_player.width) / 2
+
+    text_enemy = Text.new('Enemy', size: 26, y: 200)
+    text_enemy.x = @width_canvas - text_enemy.width + 25 - (@cols * (@block_size + 2)) / 2
+
     x_displacement = 25
     y_displacement = 250
 
     (0...@rows).each do |row|
       (0...@cols).each do |col|
-        @blocks << Block.new(x_displacement + col * (@block_size + 2), y_displacement + row * (@block_size + 2), @board[row][col])
+        @blocks << Block.new(x_displacement + col * (@block_size + 2), y_displacement + row * (@block_size + 2), 0)
       end
     end
 
