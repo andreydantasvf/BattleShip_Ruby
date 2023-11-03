@@ -9,6 +9,8 @@ class App
     @height = @@canvas.height
     @resizable = false
     @current_screen = BoardSelectedScreen.new
+    @rows = 0
+    @cols = 0
   end
 
   def self.call
@@ -43,9 +45,13 @@ class App
           case @current_screen.options[@current_screen.selected_option]
           when "Tabuleiro 8x12"
             Window.clear
+            @rows = 8
+            @cols = 12
             @current_screen = ShipsSelectedScreen.new(8, 12)
           when "Tabuleiro 10x15"
             Window.clear
+            @rows = 10
+            @cols = 15
             @current_screen = ShipsSelectedScreen.new(10, 15)
           end
         end
@@ -64,14 +70,27 @@ class App
             @current_screen.select_ship
             if @current_screen.number_ships == 0
               Window.clear
-              puts 'hora do jogo'
+              board = @current_screen.board
+              selecteds_ship = @current_screen.selecteds_ship
+              @current_screen = GameScreen.new(@rows, @cols, board, selecteds_ship)
             end
         end
       end
     end
+
+    $engine.on :mouse_down do |event|
+      case @current_screen
+      when GameScreen
+        if event.button == :left
+          if (event.x > @@canvas.width - (25 + @cols * (@@canvas.block_size + 2)) && event.x < @@canvas.width - 25 && event.y > 250 && event.y < (250 + @rows * (@@canvas.block_size + 2)))
+            puts ((event.y - 250) / (@@canvas.block_size + 2)).to_i
+            puts ((event.x - (@@canvas.width - (25 + @cols * (@@canvas.block_size + 2)))) / (@@canvas.block_size + 2)).to_i
+            puts '-------'
+          end
+        end
+      end
+    end
   end
-
-
 
 end
 
