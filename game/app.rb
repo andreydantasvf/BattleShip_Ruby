@@ -25,7 +25,7 @@ class App
 
   def run
     $engine.set(title: @title, background: @background, resizable: @resizable, width: @width, height: @height)
-    
+
     update_moviments
 
     $engine.show
@@ -83,9 +83,13 @@ class App
       when GameScreen
         if event.button == :left
           if (event.x > @@canvas.width - (25 + @cols * (@@canvas.block_size + 2)) && event.x < @@canvas.width - 25 && event.y > 250 && event.y < (250 + @rows * (@@canvas.block_size + 2)))
-            puts ((event.y - 250) / (@@canvas.block_size + 2)).to_i
-            puts ((event.x - (@@canvas.width - (25 + @cols * (@@canvas.block_size + 2)))) / (@@canvas.block_size + 2)).to_i
-            puts '-------'
+            row = ((event.y - 250) / (@@canvas.block_size + 2)).to_i
+            col = ((event.x - (@@canvas.width - (25 + @cols * (@@canvas.block_size + 2)))) / (@@canvas.block_size + 2)).to_i
+            @current_screen.handle_click(row, col)
+            if @current_screen.player_win?
+              Window.clear
+              @current_screen = BoardSelectedScreen.new
+            end
           end
         end
       end

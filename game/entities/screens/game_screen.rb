@@ -12,6 +12,7 @@ class GameScreen
     @blocks_enemy = []
     @block_size = App.class_variable_get(:@@canvas).block_size
     @width_canvas = App.class_variable_get(:@@canvas).width
+    @destroyed_enemy_ships = 0
 
     render
   end
@@ -68,7 +69,9 @@ class GameScreen
     end
   end
 
-
+  def player_win?
+    @destroyed_enemy_ships == 30
+  end
 
   def update
     @blocks_enemy.each(&:remove)
@@ -84,6 +87,7 @@ class GameScreen
     elsif @board_enemy[row][col] == 1
       @board_enemy[row][col] = 2
       @blocks_enemy[row * @cols + col].state = 1
+      @destroyed_enemy_ships += 1
       puts "Você atingiu o navio inimigo!"
       update
     end
