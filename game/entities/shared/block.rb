@@ -6,27 +6,28 @@ class Block
     @y = y
     @state = state
     @block_size = App.class_variable_get(:@@canvas).block_size
+    @square = Square.new(
+      x: @x, y: @y,
+      size: @block_size,
+      color: 'blue'
+    )
   end
   
   def draw
     if @state == 1
-      Square.new(
-        x: @x, y: @y,
-        size: @block_size,
-        color: 'red'
-      )
+      @square = Image.new('./images/explosion.png', x: @x, y: @y, width: @block_size, height: @block_size)
     elsif @state == 2
-      Square.new(
-        x: @x, y: @y,
-        size: @block_size,
-        color: 'gray'
-      )
+      @square = Image.new('./images/miss.png', x: @x, y: @y, width: @block_size, height: @block_size)
     else
-      Square.new(
+      @square = Square.new(
         x: @x, y: @y,
         size: @block_size,
         color: 'blue'
       )
     end
+  end
+
+  def remove
+    @square.remove
   end
 end
