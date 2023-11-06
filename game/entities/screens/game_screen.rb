@@ -15,6 +15,7 @@ class GameScreen
     @block_size = App.class_variable_get(:@@canvas).block_size
     @width_canvas = App.class_variable_get(:@@canvas).width
     @destroyed_enemy_ships = 0
+    @destroyed_player_ships = 0
     @count_shots = []
     @is_super_shot = false
     @avaliable_super_shot = true
@@ -22,14 +23,18 @@ class GameScreen
     @text_super_shot = Text.new('SUPER TIROS DISPONIVEIS: %d' %[count_super_shot], size: 26, y: 120)
     @text_super_shot.x = (App.class_variable_get(:@@canvas).width - @text_super_shot.width) / 2
     @text_is_super_shot = Text.new(' ', size: 10, x: 0, y: 0)
+    @hits_board = []
 
     render
   end
 
-  def active_super_shot
+  def toogle_active_super_shot
+    @is_super_shot = !is_super_shot
     @text_is_super_shot.remove
-    @text_is_super_shot = Text.new('SUPER TIRO ATIVADO', size: 26, y: 180)
-    @text_is_super_shot.x = (App.class_variable_get(:@@canvas).width - @text_is_super_shot.width) / 2
+    if @is_super_shot
+      @text_is_super_shot = Text.new('SUPER TIRO ATIVADO', size: 26, y: 180)
+      @text_is_super_shot.x = (App.class_variable_get(:@@canvas).width - @text_is_super_shot.width) / 2
+    end
   end
 
   def render
@@ -88,6 +93,10 @@ class GameScreen
     @destroyed_enemy_ships == 30
   end
 
+  def enemy_win?
+    @destroyed_player_ships == 30
+  end
+
   def update
     @blocks_enemy.each(&:remove)
     @blocks_enemy.each(&:draw)
@@ -124,13 +133,11 @@ class GameScreen
     if @board_enemy[row][col] == 0
       @board_enemy[row][col] = 2
       @blocks_enemy[row * @cols + col].state = 2
-      puts "Tiro na água."
       update
     elsif @board_enemy[row][col] == 1
       @board_enemy[row][col] = 2
       @blocks_enemy[row * @cols + col].state = 1
       @destroyed_enemy_ships += 1
-      puts "Você atingiu o navio inimigo!"
       update
     end
   end
@@ -139,7 +146,6 @@ class GameScreen
     # Verifique se a posição selecionada é válida
     if valid_position?(row, col)
       if @board_enemy[row][col] != 0
-        puts "Esse bloco já foi atingido."
         return
       end
       # Lance um "tiro" no bloco central
@@ -166,21 +172,50 @@ class GameScreen
 
   def enemy_fire()
     loop do
-      # Escolhe aleatoriamente uma posição no tabuleiro do jogador
-      row = rand(@board_player.length)
-      col = rand(@board_player[row].length)
+      if @hits_board.empty?
+        # Escolhe aleatoriamente uma posição no tabuleiro do jogador
+        row = rand(@board_player.length)
+        col = rand(@board_player[row].length)
+      else
+        # Se houver acertos anteriores, tente disparar nas proximidades
+        target = @hits_board.sample # Escolha um acerto anterior aleatório
   
+        # Gere uma lista de posições vizinhas ao alvo
+        adjacent_positions = [
+          [target[0] - 1, target[1]],
+          [target[0] + 1, target[1]],
+          [target[0], target[1] - 1],
+          [target[0], target[1] + 1]
+        ]
+  
+        # Filtrar posições válidas
+        valid_positions = adjacent_positions.select do |row, col|
+          row >= 0 && row < @board_player.length && col >= 0 && col < @board_player[row].length && @board_player[row][col] != 2
+        end
+  
+        if valid_positions.empty?
+          # Se não houver posições vizinhas válidas, faça um disparo aleatório
+          row = rand(@board_player.length)
+          col = rand(@board_player[row].length)
+        else
+          # Escolha uma posição vizinha válida aleatoriamente
+          row, col = valid_positions.sample
+          # puts 'vizinho row %d col %d' %[row, col]
+        end
+      end
+
       # Verifica se a posição ainda não foi atingida (0 representa água)
       if @board_player[row][col] == 0
         @board_player[row][col] = 2 # Marca como "tiro na água"
         @blocks_player[row * @cols + col].state = 2
-        puts "Inimigo atirou na posição (#{row}, #{col}) e acertou a água."
+        @hits_board = [] # Registre o acerto
         update
         return
       elsif @board_player[row][col] == 1
         @board_player[row][col] = 2 # Marca como "navio atingido"
         @blocks_player[row * @cols + col].state = -2
-        puts "Inimigo atirou na posição (#{row}, #{col}) e acertou o seu navio!"
+        @destroyed_player_ships += 1
+        @hits_board << [row, col] # Registre o acerto
         update
         return
       end

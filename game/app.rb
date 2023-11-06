@@ -78,8 +78,7 @@ class App
       when GameScreen
         if event.key == 'left ctrl'
           if @current_screen.avaliable_super_shot && @current_screen.count_super_shot > 0
-            @current_screen.is_super_shot = true
-            @current_screen.active_super_shot
+            @current_screen.toogle_active_super_shot
           end
         end
       end
@@ -102,7 +101,12 @@ class App
             end
             if @current_screen.player_win?
               Window.clear
-              @current_screen = BoardSelectedScreen.new
+              @current_screen = ''
+              Text.new("Player wins!", size: 32)
+            elsif @current_screen.enemy_win?
+              Window.clear
+              @current_screen = ''
+              Text.new("Enemy wins!", size: 32)
             end
           end
         end
