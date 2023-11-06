@@ -9,11 +9,14 @@ class App
     @height = @@canvas.height
     @resizable = false
     @current_screen = BoardSelectedScreen.new
+    @db = ScoreDatabase.new('scores.db')
     @rows = 0
     @cols = 0
     @song = Music.new('./songs/song.mp3')
     @song.play
     @song.loop = true
+    puts "Digite o seu Nome: "
+    @user_name = gets.chomp
   end
 
   def self.call
@@ -102,12 +105,13 @@ class App
             end
             if @current_screen.player_win?
               Window.clear
-              @current_screen = ''
-              Text.new("Player wins!", size: 32)
+              @db.insert_score(@user_name, @current_screen.score)
+              top_scores = @db.get_top_five_scores
+              @current_screen = EndScreen.new(:player, top_scores)
             elsif @current_screen.enemy_win?
               Window.clear
-              @current_screen = ''
-              Text.new("Enemy wins!", size: 32)
+              top_scores = @db.get_top_five_scores
+              @current_screen = EndScreen.new(:enemy, top_scores)
             end
           end
         end
@@ -116,8 +120,5 @@ class App
   end
 
 end
-
-puts "Digite o seu Nome: "
-user_name = gets.chomp
 
 App.call

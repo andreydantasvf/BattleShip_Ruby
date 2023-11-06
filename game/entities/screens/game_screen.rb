@@ -2,7 +2,7 @@ require_relative '../player/ship.rb'
 require_relative '../shared/block.rb'
 
 class GameScreen
-  attr_accessor :is_super_shot, :avaliable_super_shot, :count_super_shot
+  attr_accessor :is_super_shot, :avaliable_super_shot, :count_super_shot, :score
 
   def initialize(rows, cols, board_player, selecteds_ship)
     @rows = rows
