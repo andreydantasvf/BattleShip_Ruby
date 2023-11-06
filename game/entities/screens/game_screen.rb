@@ -24,8 +24,19 @@ class GameScreen
     @text_super_shot.x = (App.class_variable_get(:@@canvas).width - @text_super_shot.width) / 2
     @text_is_super_shot = Text.new(' ', size: 10, x: 0, y: 0)
     @hits_board = []
+    @super_shot_enemy = 0
+    @score = 0
+    @hit_count = 0
+    @miss_count = 0
 
     render
+  end
+
+  def efficiency_bonus
+    if @hit_count > 0 && @miss_count == 0
+      bonus = @hit_count * 5
+      @score += bonus
+    end
   end
 
   def toogle_active_super_shot
@@ -120,24 +131,54 @@ class GameScreen
       handle_single_shot(@count_shots[1][0], @count_shots[1][1])
       handle_single_shot(@count_shots[2][0], @count_shots[2][1])
 
-      enemy_fire
-      enemy_fire
-      enemy_fire
+      @avaliable_super_shot = true
+
+      enemy_shot
 
       @count_shots = []
     end
   end
 
+  def enemy_shot
+    if @super_shot_enemy < 2
+      enemy_super_shot
+      @super_shot_enemy += 1
+    else
+      enemy_fire
+      enemy_fire
+      enemy_fire
+    end
+  end
+
   def handle_single_shot(row, col)
-    @avaliable_super_shot = true
     if @board_enemy[row][col] == 0
       @board_enemy[row][col] = 2
       @blocks_enemy[row * @cols + col].state = 2
+      @score -= 5
+      @hit_count = 0
+      @miss_count += 1
       update
     elsif @board_enemy[row][col] == 1
       @board_enemy[row][col] = 2
       @blocks_enemy[row * @cols + col].state = 1
       @destroyed_enemy_ships += 1
+      @score += 10
+      @hit_count += 1
+      @miss_count = 0
+      efficiency_bonus
+      update
+    end
+  end
+
+  def handle_enemy_single_shot(row, col)
+    if @board_player[row][col] == 0
+      @board_player[row][col] = 2
+      @blocks_player[row * @cols + col].state = 2
+      update
+    elsif @board_player[row][col] == 1
+      @board_player[row][col] = 2
+      @blocks_player[row * @cols + col].state = -2
+      @destroyed_player_ships += 1
       update
     end
   end
@@ -163,14 +204,41 @@ class GameScreen
         end
       end
 
+      @is_super_shot = false
+      @count_super_shot -= 1
       @text_super_shot.remove
       @text_super_shot = Text.new('SUPER TIROS DISPONIVEIS: %d' %[count_super_shot], size: 26, y: 120)
       @text_super_shot.x = (App.class_variable_get(:@@canvas).width - @text_super_shot.width) / 2
       @text_is_super_shot.remove
+      enemy_shot
     end
   end
 
-  def enemy_fire()
+  def enemy_super_shot
+    # Gere uma posição aleatória para o tiro do inimigo
+    row = rand(@board_player.length)
+    col = rand(@board_player[row].length)
+    
+    # Verifique se a posição selecionada é válida
+    if valid_position?(row, col)
+      # Lance um "tiro" no bloco central
+      handle_enemy_single_shot(row, col)
+    
+      # Verifique os blocos vizinhos
+      [-1, 0, 1].each do |r_offset|
+        [-1, 0, 1].each do |c_offset|
+          r = row + r_offset
+          c = col + c_offset
+          # Verifique se a posição é válida
+          if valid_position?(r, c)
+            handle_enemy_single_shot(r, c)
+          end
+        end
+      end
+    end
+  end
+
+  def enemy_fire
     loop do
       if @hits_board.empty?
         # Escolhe aleatoriamente uma posição no tabuleiro do jogador
