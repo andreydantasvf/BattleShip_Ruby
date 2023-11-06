@@ -91,6 +91,9 @@ class GameScreen
   def update
     @blocks_enemy.each(&:remove)
     @blocks_enemy.each(&:draw)
+
+    @blocks_player.each(&:remove)
+    @blocks_player.each(&:draw)
   end
 
   def default_shot(row, col)
@@ -107,6 +110,10 @@ class GameScreen
       handle_single_shot(@count_shots[0][0], @count_shots[0][1])
       handle_single_shot(@count_shots[1][0], @count_shots[1][1])
       handle_single_shot(@count_shots[2][0], @count_shots[2][1])
+
+      enemy_fire
+      enemy_fire
+      enemy_fire
 
       @count_shots = []
     end
@@ -154,6 +161,29 @@ class GameScreen
       @text_super_shot = Text.new('SUPER TIROS DISPONIVEIS: %d' %[count_super_shot], size: 26, y: 120)
       @text_super_shot.x = (App.class_variable_get(:@@canvas).width - @text_super_shot.width) / 2
       @text_is_super_shot.remove
+    end
+  end
+
+  def enemy_fire()
+    loop do
+      # Escolhe aleatoriamente uma posição no tabuleiro do jogador
+      row = rand(@board_player.length)
+      col = rand(@board_player[row].length)
+  
+      # Verifica se a posição ainda não foi atingida (0 representa água)
+      if @board_player[row][col] == 0
+        @board_player[row][col] = 2 # Marca como "tiro na água"
+        @blocks_player[row * @cols + col].state = 2
+        puts "Inimigo atirou na posição (#{row}, #{col}) e acertou a água."
+        update
+        return
+      elsif @board_player[row][col] == 1
+        @board_player[row][col] = 2 # Marca como "navio atingido"
+        @blocks_player[row * @cols + col].state = -2
+        puts "Inimigo atirou na posição (#{row}, #{col}) e acertou o seu navio!"
+        update
+        return
+      end
     end
   end
   

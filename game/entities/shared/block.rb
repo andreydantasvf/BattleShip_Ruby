@@ -15,7 +15,7 @@ class Block
   
   def draw
     if @state == 1
-      @square = Image.new('./images/explosion.png', x: @x, y: @y, width: @block_size, height: @block_size)
+      @square = Image.new('./images/explosion.png', x: @x, y: @y, width: @block_size, height: @block_size, z: 100)
     elsif @state == 2
       @square = Image.new('./images/miss.png', x: @x, y: @y, width: @block_size, height: @block_size)
     elsif @state == -1
@@ -23,6 +23,12 @@ class Block
         x: @x, y: @y,
         size: @block_size,
         color: 'gray'
+      )
+    elsif @state == -2
+      @square = Square.new(
+        x: @x, y: @y,
+        size: @block_size,
+        color: 'red'
       )
     else
       @square = Square.new(
