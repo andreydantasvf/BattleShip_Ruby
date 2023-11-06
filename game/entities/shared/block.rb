@@ -18,6 +18,12 @@ class Block
       @square = Image.new('./images/explosion.png', x: @x, y: @y, width: @block_size, height: @block_size)
     elsif @state == 2
       @square = Image.new('./images/miss.png', x: @x, y: @y, width: @block_size, height: @block_size)
+    elsif @state == -1
+      @square = Square.new(
+        x: @x, y: @y,
+        size: @block_size,
+        color: 'gray'
+      )
     else
       @square = Square.new(
         x: @x, y: @y,

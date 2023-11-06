@@ -2,6 +2,8 @@ require_relative '../player/ship.rb'
 require_relative '../shared/block.rb'
 
 class GameScreen
+  attr_accessor :is_super_shot, :avaliable_super_shot, :count_super_shot
+
   def initialize(rows, cols, board_player, selecteds_ship)
     @rows = rows
     @cols = cols
@@ -13,8 +15,21 @@ class GameScreen
     @block_size = App.class_variable_get(:@@canvas).block_size
     @width_canvas = App.class_variable_get(:@@canvas).width
     @destroyed_enemy_ships = 0
+    @count_shots = []
+    @is_super_shot = false
+    @avaliable_super_shot = true
+    @count_super_shot = 2
+    @text_super_shot = Text.new('SUPER TIROS DISPONIVEIS: %d' %[count_super_shot], size: 26, y: 120)
+    @text_super_shot.x = (App.class_variable_get(:@@canvas).width - @text_super_shot.width) / 2
+    @text_is_super_shot = Text.new(' ', size: 10, x: 0, y: 0)
 
     render
+  end
+
+  def active_super_shot
+    @text_is_super_shot.remove
+    @text_is_super_shot = Text.new('SUPER TIRO ATIVADO', size: 26, y: 180)
+    @text_is_super_shot.x = (App.class_variable_get(:@@canvas).width - @text_is_super_shot.width) / 2
   end
 
   def render
@@ -78,7 +93,27 @@ class GameScreen
     @blocks_enemy.each(&:draw)
   end
 
-  def handle_click(row, col)
+  def default_shot(row, col)
+    if @count_shots.length < 3
+      if @blocks_enemy[row * @cols + col].state == 0
+        @blocks_enemy[row * @cols + col].state = -1
+
+        @count_shots << [row, col]
+        update
+      end
+    end
+
+    if @count_shots.length == 3
+      handle_single_shot(@count_shots[0][0], @count_shots[0][1])
+      handle_single_shot(@count_shots[1][0], @count_shots[1][1])
+      handle_single_shot(@count_shots[2][0], @count_shots[2][1])
+
+      @count_shots = []
+    end
+  end
+
+  def handle_single_shot(row, col)
+    @avaliable_super_shot = true
     if @board_enemy[row][col] == 0
       @board_enemy[row][col] = 2
       @blocks_enemy[row * @cols + col].state = 2
@@ -91,6 +126,39 @@ class GameScreen
       puts "Você atingiu o navio inimigo!"
       update
     end
+  end
+
+  def super_shot(row, col)
+    # Verifique se a posição selecionada é válida
+    if valid_position?(row, col)
+      if @board_enemy[row][col] != 0
+        puts "Esse bloco já foi atingido."
+        return
+      end
+      # Lance um "tiro" no bloco central
+      handle_single_shot(row, col)
+  
+      # Verifique os blocos vizinhos
+      [-1, 0, 1].each do |r_offset|
+        [-1, 0, 1].each do |c_offset|
+          r = row + r_offset
+          c = col + c_offset
+          # Verifique se a posição é válida
+          if valid_position?(r, c)
+            handle_single_shot(r, c)
+          end
+        end
+      end
+
+      @text_super_shot.remove
+      @text_super_shot = Text.new('SUPER TIROS DISPONIVEIS: %d' %[count_super_shot], size: 26, y: 120)
+      @text_super_shot.x = (App.class_variable_get(:@@canvas).width - @text_super_shot.width) / 2
+      @text_is_super_shot.remove
+    end
+  end
+  
+  def valid_position?(row, col)
+    row >= 0 && row < @rows && col >= 0 && col < @cols
   end
 
   def render_enemy_board

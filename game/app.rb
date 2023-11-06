@@ -75,6 +75,13 @@ class App
               @current_screen = GameScreen.new(@rows, @cols, board, selecteds_ship)
             end
         end
+      when GameScreen
+        if event.key == 'left ctrl'
+          if @current_screen.avaliable_super_shot && @current_screen.count_super_shot > 0
+            @current_screen.is_super_shot = true
+            @current_screen.active_super_shot
+          end
+        end
       end
     end
 
@@ -85,7 +92,14 @@ class App
           if (event.x > @@canvas.width - (25 + @cols * (@@canvas.block_size + 2)) && event.x < @@canvas.width - 25 && event.y > 250 && event.y < (250 + @rows * (@@canvas.block_size + 2)))
             row = ((event.y - 250) / (@@canvas.block_size + 2)).to_i
             col = ((event.x - (@@canvas.width - (25 + @cols * (@@canvas.block_size + 2)))) / (@@canvas.block_size + 2)).to_i
-            @current_screen.handle_click(row, col)
+            if @current_screen.is_super_shot
+              @current_screen.count_super_shot -= 1
+              @current_screen.super_shot(row, col)
+              @current_screen.is_super_shot = false
+            else
+              @current_screen.avaliable_super_shot = false
+              @current_screen.default_shot(row, col)
+            end
             if @current_screen.player_win?
               Window.clear
               @current_screen = BoardSelectedScreen.new
