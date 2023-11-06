@@ -15,7 +15,7 @@ class EndScreen
 
     top_scores.each_with_index do |score, index|
       score = "Nome: #{score[:player_name]}, Pontuação: #{score[:score]}, Data/Horário: #{score[:created_at]}"
-      score_text = Text.new(score, size: 26, y: 240 + (index * 80))
+      score_text = Text.new(score, size: 26, y: 270 + (index * 80))
       score_text.x = (@width_canvas - score_text.width) / 2
     end
   end
