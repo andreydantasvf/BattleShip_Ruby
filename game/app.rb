@@ -11,6 +11,9 @@ class App
     @current_screen = BoardSelectedScreen.new
     @rows = 0
     @cols = 0
+    @song = Music.new('./songs/song.mp3')
+    @song.play
+    @song.loop = true
   end
 
   def self.call
@@ -92,9 +95,7 @@ class App
             row = ((event.y - 250) / (@@canvas.block_size + 2)).to_i
             col = ((event.x - (@@canvas.width - (25 + @cols * (@@canvas.block_size + 2)))) / (@@canvas.block_size + 2)).to_i
             if @current_screen.is_super_shot
-              @current_screen.count_super_shot -= 1
               @current_screen.super_shot(row, col)
-              @current_screen.is_super_shot = false
             else
               @current_screen.avaliable_super_shot = false
               @current_screen.default_shot(row, col)
@@ -115,5 +116,8 @@ class App
   end
 
 end
+
+puts "Digite o seu Nome: "
+user_name = gets.chomp
 
 App.call
