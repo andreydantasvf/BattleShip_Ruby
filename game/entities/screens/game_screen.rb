@@ -186,7 +186,7 @@ class GameScreen
   def super_shot(row, col)
     # Verifique se a posição selecionada é válida
     if valid_position?(row, col)
-      if @board_enemy[row][col] != 0
+      if @board_enemy[row][col] == 2
         return
       end
       # Lance um "tiro" no bloco central
