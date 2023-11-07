@@ -13,6 +13,28 @@ Game project simulating the BattleShip game. The game was developed in ruby, usi
 - Ruby2d
 - SQLite3
 
+## 🎮 Controllers
+
+### Board size selection screen
+
+- *W* - move up
+- *S* - move down
+- *ENTER* - select
+
+### Ships positions selection screen
+
+- *W* - move up
+- *S* - move down
+- *A* - move left
+- *D* - move right
+- *CTRL* - rotate ship
+- *ENTER* - select position
+
+### Game screen
+
+- *Left Mouse Click* - select board block
+- *CTRL* - Enable/Disable super_shot mode
+
 ## 💻 Start the project locally
 
 ### Requirements
